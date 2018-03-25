@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
-    public bool pathOnly;
+    public bool displayGrid;
     public Transform player;
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
@@ -26,16 +26,18 @@ public class Grid : MonoBehaviour
         foreach (TerrainType region in walkableRegions)
         {
             walkableMask.value |= region.terrainMask.value;
-            walkableRegionsDictionary.Add((int)Mathf.Log(region.terrainMask.value, 2),region.terrainPenalty);
+            walkableRegionsDictionary.Add((int)Mathf.Log(region.terrainMask.value, 2), region.terrainPenalty);
         }
         CreateGrid();
     }
 
-	public int MaxSize {
-		get {
-			return gridSizeX * gridSizeY;
-		}
-	}
+    public int MaxSize
+    {
+        get
+        {
+            return gridSizeX * gridSizeY;
+        }
+    }
 
     void CreateGrid()
     {
@@ -52,10 +54,12 @@ public class Grid : MonoBehaviour
                 int movementPenalty = 0;
 
                 //Raycaster
-                if (walkable) {
+                if (walkable)
+                {
                     Ray ray = new Ray(worldPoint + Vector3.up * 50, Vector3.down);
                     RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit, 100, walkableMask)) {
+                    if (Physics.Raycast(ray, out hit, 100, walkableMask))
+                    {
                         walkableRegionsDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
                     }
                 }
@@ -100,46 +104,25 @@ public class Grid : MonoBehaviour
         return grid[x, y];
     }
 
-    public List<Node> path;
-
     void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
 
-        if (pathOnly)
-        {
-            if (path != null)
-            {
-                foreach (Node n in path)
-                {
-                    Gizmos.color = Color.black;
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
-                }
-            }
-        }
-        else
-        {
 
-            if (grid != null)
+        if (grid != null && displayGrid)
+        {
+            foreach (Node n in grid)
             {
-                foreach (Node n in grid)
-                {
-                    Gizmos.color = (n.walkable) ? Color.white : Color.red;
-                    if (path != null)
-                    {
-                        if (path.Contains(n))
-                        {
-                            Gizmos.color = Color.black;
-                        }
-                    }
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
-                }
+                Gizmos.color = (n.walkable) ? Color.white : Color.red;
+                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
+
     }
 
     [System.Serializable]
-    public class TerrainType {
+    public class TerrainType
+    {
         public LayerMask terrainMask;
         public int terrainPenalty;
     }
