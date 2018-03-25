@@ -20,8 +20,6 @@ public class Pathfinding : MonoBehaviour
     }
     IEnumerator FindPath(Vector3 startPos, Vector3 targetPos)
     {
-        Stopwatch sw = new Stopwatch();
-        sw.Start();
         Vector3[] waypoints = new Vector3[0];
         bool pathSuccess = false;
         Node startNode = grid.NodeFromWorldPoint(startPos);
@@ -40,7 +38,6 @@ public class Pathfinding : MonoBehaviour
 
                 if (currentNode == targetNode)
                 {
-                    sw.Stop();
                     //UnityEngine.Debug.Log("Path found after: " + sw.ElapsedMilliseconds + "ms");
                     pathSuccess = true;
                     break;
@@ -87,7 +84,7 @@ public class Pathfinding : MonoBehaviour
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
-
+        path.Add(startNode);
         Vector3[] waypoints = SimplifyPath(path);
         Array.Reverse(waypoints);
 
@@ -102,7 +99,7 @@ public class Pathfinding : MonoBehaviour
         for(int i = 1; i < path.Count; i++) {
             Vector2 directionNew = new Vector2(path[i-1].gridX - path[i].gridX, path[i-1].gridY - path[i].gridY);
             if( directionNew != directionOld) {
-                waypoints.Add(path[i].worldPosition);
+                waypoints.Add(path[i-1].worldPosition);
             }
             directionOld = directionNew;
         }

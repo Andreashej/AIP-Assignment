@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Leader
+  - Follower
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - Unwalkable
   - Grass
   - Path
-  - Water
+  - OtherPathType
   - Very difficult
   - 
   - 
