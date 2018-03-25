@@ -14,10 +14,9 @@ public class Pathfinding : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump"))
-        {
-            FindPath(seeker.position, target.position);
-        }
+
+        FindPath(seeker.position, target.position);
+
     }
     void FindPath(Vector3 startPos, Vector3 targetPos)
     {
@@ -40,7 +39,7 @@ public class Pathfinding : MonoBehaviour
             if (currentNode == targetNode)
             {
                 sw.Stop();
-                UnityEngine.Debug.Log("Path found after: " + sw.ElapsedMilliseconds + "ms");
+                //UnityEngine.Debug.Log("Path found after: " + sw.ElapsedMilliseconds + "ms");
                 RetracePath(startNode, targetNode);
                 return;
             }
@@ -49,7 +48,8 @@ public class Pathfinding : MonoBehaviour
             {
                 if (!neighbour.walkable || closedSet.Contains(neighbour)) continue;
 
-                int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
+                int newMovementCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour) + neighbour.movementPenalty;
+                
                 if (newMovementCostToNeighbour < neighbour.gCost || !openSet.Contains(neighbour))
                 {
                     neighbour.gCost = newMovementCostToNeighbour;
@@ -62,7 +62,7 @@ public class Pathfinding : MonoBehaviour
                     }
                     else
                     {
-						openSet.UpdateItem(neighbour);
+                        openSet.UpdateItem(neighbour);
                     }
                 }
             }
